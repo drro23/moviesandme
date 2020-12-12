@@ -4,14 +4,14 @@ const styles = StyleSheet.create({
   cardContainer: {
     color: 'white',
     height: 250,
-    padding: 5,
-    margin: 10,
+    margin: 7,
     flexDirection: 'row',
   },
   movieImage: {
     flex: 1,
     width: 120,
     height: 300,
+    borderRadius: 20,
   },
   movieInfo: {
     flexDirection: 'column',
