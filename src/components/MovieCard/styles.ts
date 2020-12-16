@@ -11,12 +11,12 @@ const styles = StyleSheet.create({
     flex: 1,
     width: 120,
     height: 300,
-    borderRadius: 20,
+    borderRadius: 15,
   },
   movieInfo: {
     flexDirection: 'column',
     flex: 2.5,
-    marginLeft: 5,
+    marginLeft: 10,
   },
   movieHeader: {
     flexDirection: 'row',
@@ -28,6 +28,8 @@ const styles = StyleSheet.create({
   movieTitle: {
     color: 'white',
     flex: 4,
+    fontSize: 20,
+    fontWeight: 'bold',
     // borderWidth: 1,
     // borderColor: 'black',
   },
@@ -36,18 +38,21 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 0,
     flex: 1,
+    fontSize: 25,
+    fontWeight: 'bold',
     // borderWidth: 1,
     // borderColor: 'black',
   },
   descriptionContainer: {
     marginTop: 5,
     flex: 3,
-    overflow: 'hidden',
     // borderWidth: 1,
     // borderColor: 'black',
   },
   overview: {
     color: 'white',
+    fontSize: 18,
+    lineHeight: 25,
   },
   releaseContainer: {
     marginTop: 5,
@@ -60,6 +65,7 @@ const styles = StyleSheet.create({
   releaseDate: {
     color: 'white',
     alignSelf: 'flex-end',
+    fontSize: 15,
   },
 });
 
