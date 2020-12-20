@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useReducer} from 'react';
 import {
   Button,
   FlatList,
@@ -8,28 +8,75 @@ import {
   TextInput,
   View,
 } from 'react-native';
-// import data from '../../helpers/filmsData';
 import MovieCard from '../components/MovieCard';
 import {Movie} from '../components/MovieCard/MovieCard';
 import {getPopularMovies, searchMovie} from '../../API/TMDBApi';
+import {StackNavigationProp} from '@react-navigation/stack';
+import axios from 'axios';
 
-const MainView: () => JSX.Element = () => {
-  const [movies, setMovies] = useState<Movie[]>([]);
+type RootStackParamList = {
+  Home: undefined;
+  MovieDetails: {movieId: string};
+};
+
+type MovieDetailsScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  'MovieDetails'
+>;
+
+type Props = {
+  navigation: MovieDetailsScreenNavigationProp;
+};
+
+interface IState {
+  movies: Movie[] | undefined;
+}
+
+interface IAction {
+  type: string;
+  payload: Movie[] | undefined;
+}
+
+const initialState: IState = {
+  movies: undefined,
+};
+
+const reducer = (state: IState, action: IAction) => {
+  switch (action.type) {
+    case 'setMovies':
+      return {movies: action.payload};
+    default:
+      return state;
+  }
+};
+
+const MainView = ({navigation}: Props) => {
+  const [state, dispatch] = useReducer(reducer, initialState);
 
   const _getMovies = async () => {
     const moviesData = await getPopularMovies();
-    setMovies(moviesData);
+    dispatch({type: 'setMovies', payload: moviesData});
   };
 
   useEffect(() => {
+    const cancelTokenSource = axios.CancelToken.source();
+
     _getMovies();
+
+    return () => {
+      cancelTokenSource.cancel();
+    };
   }, []);
 
   const _search = async (text: string) => {
     if (text.length > 2) {
       const moviesData = await searchMovie(text);
-      setMovies(moviesData);
+      dispatch({type: 'setMovies', payload: moviesData});
     }
+  };
+
+  const _displayDetailsForMovie = (movieId: string) => {
+    navigation.navigate('MovieDetails', {movieId: movieId});
   };
 
   return (
@@ -51,8 +98,13 @@ const MainView: () => JSX.Element = () => {
             </View>
           </View>
           <FlatList
-            data={movies}
-            renderItem={({item}) => <MovieCard movie={item} />}
+            data={state.movies}
+            renderItem={({item}) => (
+              <MovieCard
+                movie={item}
+                displayDetailsForMovie={_displayDetailsForMovie}
+              />
+            )}
             keyExtractor={(item) => item.id.toString()}
           />
         </View>
