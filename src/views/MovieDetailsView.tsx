@@ -1,11 +1,19 @@
 import {RouteProp} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
-import React, {useEffect, useReducer, useState} from 'react';
-import {SafeAreaView, Text, View} from 'react-native';
+import React, {useEffect, useReducer} from 'react';
+import {IMAGE_URL} from '@env';
+import {
+  Button,
+  Image,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import axios from 'axios';
 import {getMovieById} from '../../API/TMDBApi';
 import {Movie} from '../components/MovieCard/MovieCard';
-import MovieCardDetails from '../components/MovieCardDetails';
 
 type RootStackParamList = {
   Home: undefined;
@@ -52,7 +60,6 @@ const getMovie = async (movieId: string, dispatch: any) => {
 };
 
 const MovieDetailsView = ({route}: Props) => {
-  //   const [movie, setMovie] = useState<Movie>();
   const [state, dispatch] = useReducer(reducer, initialState);
   const movieId = route.params.movieId;
 
@@ -67,11 +74,50 @@ const MovieDetailsView = ({route}: Props) => {
 
   return (
     <SafeAreaView>
-      <View>
-        <MovieCardDetails movie={state.movie} />
-      </View>
+      {!state.movie ? (
+        <View>
+          <Text>Loading...</Text>
+        </View>
+      ) : (
+        <ScrollView style={styles.mainDetailsView}>
+          <Image
+            style={styles.moviePoster}
+            source={{uri: IMAGE_URL + state.movie?.poster_path}}
+          />
+          <Text style={styles.movieTitle}>{state.movie?.original_title}</Text>
+          <Button title="Favorite" onPress={() => console.log('favori')} />
+          <Text style={styles.overview}>{state.movie?.overview}</Text>
+        </ScrollView>
+      )}
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  loadingView: {
+    color: 'white',
+  },
+  mainDetailsView: {
+    height: '100%',
+    backgroundColor: '#333',
+  },
+  moviePoster: {
+    width: '100%',
+    height: 250,
+    resizeMode: 'stretch',
+  },
+  movieTitle: {
+    color: 'white',
+    fontSize: 35,
+    textAlign: 'center',
+    marginTop: 15,
+  },
+  overview: {
+    color: 'white',
+    fontSize: 20,
+    lineHeight: 25,
+    marginHorizontal: 10,
+  },
+});
 
 export default MovieDetailsView;
