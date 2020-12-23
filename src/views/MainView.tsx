@@ -2,9 +2,11 @@ import React, {useEffect, useReducer} from 'react';
 import {
   Button,
   FlatList,
+  Pressable,
   SafeAreaView,
   StatusBar,
   StyleSheet,
+  Text,
   TextInput,
   View,
 } from 'react-native';
@@ -93,9 +95,9 @@ const MainView = ({navigation}: Props) => {
               placeholder="Search a movie"
               placeholderTextColor="grey"
             />
-            <View style={styles.searchButton}>
-              <Button title="Search" color="" onPress={() => {}} />
-            </View>
+            <Pressable onPress={() => console.log('favori pressed')}>
+              <Text style={styles.searchBtn}>Search</Text>
+            </Pressable>
           </View>
           <FlatList
             data={state.movies}
@@ -117,6 +119,15 @@ const styles = StyleSheet.create({
   mainView: {
     height: '100%',
     backgroundColor: '#333',
+  },
+  searchBtn: {
+    backgroundColor: '#00a2ff',
+    textAlign: 'center',
+    fontSize: 18,
+    color: 'white',
+    borderRadius: 10,
+    paddingVertical: 10,
+    margin: 10,
   },
   textStyle: {
     color: 'white',

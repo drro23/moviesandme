@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
   },
   movieTitle: {
     color: 'white',
-    flex: 4,
+    flex: 3,
     fontSize: 20,
     fontWeight: 'bold',
     // borderWidth: 1,
@@ -35,11 +35,9 @@ const styles = StyleSheet.create({
   },
   voteAverage: {
     color: 'white',
-    position: 'absolute',
-    right: 0,
-    flex: 1,
     fontSize: 25,
     fontWeight: 'bold',
+    marginLeft: 10,
     // borderWidth: 1,
     // borderColor: 'black',
   },

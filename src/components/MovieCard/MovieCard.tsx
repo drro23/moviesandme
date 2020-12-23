@@ -72,7 +72,9 @@ export default function MovieCard(props: MovieCardProps) {
         </View>
         <View style={styles.movieInfo}>
           <View style={styles.movieHeader}>
-            <Text style={styles.movieTitle}>{props.movie.title}</Text>
+            <Text style={styles.movieTitle} numberOfLines={2}>
+              {props.movie.title}
+            </Text>
             <Text style={styles.voteAverage}>{props.movie.vote_average}</Text>
           </View>
           <View style={styles.descriptionContainer}>
