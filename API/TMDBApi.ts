@@ -8,9 +8,7 @@ export async function getPopularMovies() {
     const res = await axios.get(
       `${MOVIE_BASE_URL}/popular?api_key=${API_TOKEN}`,
     );
-    console.log('getPopularMovies res: ', res);
     moviesData = res.data.results;
-    console.log('res data: ', moviesData);
   } catch (error) {
     console.log(error);
   }
@@ -23,9 +21,7 @@ export async function getMovieById(movieId: string) {
     const res = await axios.get(
       `${MOVIE_BASE_URL}/${movieId}?api_key=${API_TOKEN}`,
     );
-    console.log('getMovieById res: ', res);
     movieData = res.data;
-    console.log('res data: ', movieData);
   } catch (error) {
     console.log(error);
   }

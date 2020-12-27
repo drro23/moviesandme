@@ -15,7 +15,10 @@ import {
 import axios from 'axios';
 import {getMovieById} from '../../API/TMDBApi';
 import {Movie} from '../components/MovieCard/MovieCard';
-import {connect} from 'react-redux';
+import {connect, useDispatch} from 'react-redux';
+import {FavoriteState} from '../redux/reducers/favoriteReducer';
+import {ADD_FAVORITE, REMOVE_FAVORITE} from '../redux/actions/favoriteActions';
+import Icon from 'react-native-vector-icons/AntDesign';
 
 type RootStackParamList = {
   Home: undefined;
@@ -32,6 +35,7 @@ type ProfileScreenNavigationProp = StackNavigationProp<
 type Props = {
   route: MovieDetailsRouteProp;
   navigation: ProfileScreenNavigationProp;
+  favoriteMovies: Movie[];
 };
 
 interface IState {
@@ -50,26 +54,30 @@ const initialState: IState = {
 const reducer = (state: IState, action: IAction) => {
   switch (action.type) {
     case 'setMovie':
-      return {movie: action.payload};
+      return {...state, movie: action.payload};
     default:
       return state;
   }
 };
 
-const getMovie = async (movieId: string, dispatch: any) => {
+const getMovie = async (movieId: string, dispatch: Function) => {
   const movieData = await getMovieById(movieId);
   dispatch({type: 'setMovie', payload: movieData});
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: FavoriteState) => {
   return {
-    favorite: state.favorite,
+    favoriteMovies: state.favoriteMovies,
   };
 };
 
-const MovieDetailsView = ({route}: Props) => {
+const MovieDetailsView = ({route, favoriteMovies}: Props) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const movieId = route.params.movieId;
+  const reduxDispatch = useDispatch();
+  let isFavorite = favoriteMovies.find(
+    (movie) => movie.id.toString() === movieId,
+  );
 
   useEffect(() => {
     const cancelTokenSource = axios.CancelToken.source();
@@ -79,6 +87,14 @@ const MovieDetailsView = ({route}: Props) => {
       cancelTokenSource.cancel();
     };
   }, [movieId]);
+
+  const toggleFavoriteMovie = () => {
+    if (!isFavorite) {
+      reduxDispatch({type: ADD_FAVORITE, payload: state.movie});
+    } else {
+      reduxDispatch({type: REMOVE_FAVORITE, payload: {id: movieId}});
+    }
+  };
 
   return (
     <SafeAreaView>
@@ -93,8 +109,13 @@ const MovieDetailsView = ({route}: Props) => {
             source={{uri: IMAGE_URL + state.movie?.poster_path}}
           />
           <Text style={styles.movieTitle}>{state.movie?.original_title}</Text>
-          <Pressable onPress={() => console.log('favori pressed')}>
-            <Text style={styles.favoriButton}>Favori</Text>
+          <Pressable onPress={() => toggleFavoriteMovie()}>
+            <Icon
+              style={styles.favoriButton}
+              name={`${isFavorite ? 'heart' : 'hearto'}`}
+              size={30}
+              color="#00a2ff"
+            />
           </Pressable>
           <Text style={styles.overview}>{state.movie?.overview}</Text>
         </ScrollView>
@@ -133,14 +154,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
   favoriButton: {
-    backgroundColor: '#00a2ff',
-    textAlign: 'center',
-    fontSize: 18,
-    color: 'white',
-    borderRadius: 10,
-    paddingVertical: 10,
-    marginHorizontal: 10,
-    marginVertical: 10,
+    alignSelf: 'center',
+    marginVertical: 7,
   },
 });
 

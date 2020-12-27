@@ -1,6 +1,5 @@
 import React, {useEffect, useReducer} from 'react';
 import {
-  Button,
   FlatList,
   Pressable,
   SafeAreaView,
